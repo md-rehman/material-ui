@@ -425,6 +425,17 @@ export default function useAutocomplete(props) {
 
     const valueItem = multiple ? value[0] : value;
 
+    // Handle the case when options increase while nothing is selected
+    if (
+      autoHighlight === false &&
+      highlightedIndexRef.current <= filteredOptions.length - 1 &&
+      filteredOptions.length !== 0 &&
+      valueItem == null
+    ) {
+      setHighlightedIndex({ index: highlightedIndexRef.current });
+      return;
+    }
+
     // The popup is empty, reset
     if (filteredOptions.length === 0 || valueItem == null) {
       changeHighlightedIndex({ diff: 'reset' });
@@ -476,6 +487,7 @@ export default function useAutocomplete(props) {
     // Don't sync the highlighted index with the value when multiple
     // eslint-disable-next-line react-hooks/exhaustive-deps
     multiple ? false : value,
+    options,
     filterSelectedOptions,
     changeHighlightedIndex,
     setHighlightedIndex,
